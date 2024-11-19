@@ -62,6 +62,7 @@ struct glob_item_list* new_glob_item_list_ptr() {
 
 struct type_list* TTNil() { return NULL; }
 
+// add a new type
 struct type_list* TTCons(struct left_type* t, struct var_decl_expr* e,
                          struct type_list* next) {
     struct type_list* res = new_type_list_ptr();

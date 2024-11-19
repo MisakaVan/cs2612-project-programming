@@ -35,20 +35,23 @@ enum GlobItemType {
     T_VAR_DEF
 };
 
+// `left_type` 表示类型声明左侧的类型，如 `struct` 、 `union` 、 `enum`
+// 与基本类型
 struct left_type;
-// left_type 表示类型声明左侧的类型，如struct、union、enum与基本类型
-struct var_decl_expr;
-// var_decl_expr 表示类型声明右侧用于表达指针、数组等类型信息的表达式
-// var_decl_expr 可以含有一个变量名，也可以不包含任何变量名
 
+// `var_decl_expr` 表示类型声明右侧用于表达指针、数组等类型信息的表达式
+// `var_decl_expr` 可以含有一个变量名，也可以不包含任何变量名
+struct var_decl_expr;
+
+// `type_list` 可以用于表示 `struct` 与 `union` 的域，以及函数的参数类型列表
+// 用于前者时，类型中的变量名就是域的名字；用于后者时，类型中可以没有变量名
 struct type_list {
     struct left_type*     t;
     struct var_decl_expr* e;
     struct type_list*     next;
 };
-// type_list 可以用于表示 struct与union 的域，以及函数的参数类型列表
-// 用于前者时，类型中的变量名就是域的名字；用于后者时，类型中可以没有变量名
 
+// `enum_ele_list` 用于表示 `enum` 的元素列表
 struct enum_ele_list {
     char*                 name;
     struct enum_ele_list* next;
@@ -60,27 +63,27 @@ struct left_type {
         struct {
             char* name;
         } STRUCT_TYPE;
+        // name = NULL 表示这是匿名 struct （只适用于NEW_STRUCT_TYPE情形）
         struct {
             char*             name;
             struct type_list* fld;
         } NEW_STRUCT_TYPE;
-        // name = NULL 表示这是匿名 struct （只适用于NEW_STRUCT_TYPE情形）
         struct {
             char* name;
         } UNION_TYPE;
+        // name = NULL 表示这是匿名 union （只适用于NEW_UNION_TYPE情形）
         struct {
             char*             name;
             struct type_list* fld;
         } NEW_UNION_TYPE;
-        // name = NULL 表示这是匿名 union （只适用于NEW_UNION_TYPE情形）
         struct {
             char* name;
         } ENUM_TYPE;
+        // name = NULL 表示这是匿名 enum （只适用于NEW_ENUM_TYPE情形）
         struct {
             char*                 name;
             struct enum_ele_list* ele;
         } NEW_ENUM_TYPE;
-        // name = NULL 表示这是匿名 enum （只适用于NEW_ENUM_TYPE情形）
         struct {
             void* none;
         } INT_TYPE;
@@ -113,6 +116,15 @@ struct var_decl_expr {
     } d;
 };
 
+// a `global_item` is:
+// 1. struct definition
+// 2. struct declaration
+// 3. union definition
+// 4. union declaration
+// 5. enum definition
+// 6. enum declaration
+// 7. typedef
+// 8. variable definition
 struct glob_item {
     enum GlobItemType t;
     union {
@@ -148,6 +160,7 @@ struct glob_item {
     } d;
 };
 
+// a linked list of global items
 struct glob_item_list {
     struct glob_item*      data;
     struct glob_item_list* next;
