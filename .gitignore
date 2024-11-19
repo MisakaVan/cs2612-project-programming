@@ -1,5 +1,20 @@
+.vscode/
+.DS_Store
+
+
 # middle files
 *.o
+lexer.c
+lexer.h
+parser.c
+parser.h
+
+# build
+main
 
 # output files
 *.output
+
+# clangd 
+compile_commands.json
+.cache
