@@ -1,3 +1,11 @@
+# macro for gcc
+CC = gcc
+ifdef V
+	CFLAGS = -v
+else
+	CFLAGS =
+endif
+
 lexer.h: lang.l
 	flex lang.l
 
@@ -11,19 +19,22 @@ parser.h: lang.y
 	bison -o parser.c -d -v lang.y
 
 lang.o: lang.c lang.h
-	gcc -c lang.c
+	$(CC) $(CFLAGS) -c lang.c
 
 parser.o: parser.c parser.h lexer.h lang.h
-	gcc -c parser.c
+	$(CC) $(CFLAGS) -c parser.c
 
 lexer.o: lexer.c lexer.h parser.h lang.h
-	gcc -c lexer.c
+	$(CC) $(CFLAGS) -c lexer.c
 
-main.o: main.c lexer.h parser.h lang.h
-	gcc -c main.c
+lib.o: lib.c lib.h
+	$(CC) $(CFLAGS) -c lib.c
 
-main: lang.o parser.o lexer.o main.o
-	gcc lang.o parser.o lexer.o main.o -o main
+main.o: main.c lexer.h parser.h lang.h lib.h
+	$(CC) $(CFLAGS) -c main.c
+
+main: lang.o parser.o lexer.o main.o lib.o
+	$(CC) $(CFLAGS) lang.o parser.o lexer.o main.o lib.o -o main
 
 all: main
 
@@ -35,4 +46,3 @@ clean:
 %.c: %.l
 
 .DEFAULT_GOAL := all
-
