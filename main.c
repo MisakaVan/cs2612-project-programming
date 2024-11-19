@@ -3,10 +3,12 @@
 #include "parser.h"
 #include <stdio.h>
 
+// clang-format off
 extern struct glob_item_list *root;
 int yyparse();
+// clang-format on
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     if (argc == 1) {
         printf("Error, not enough arguments!\n");
         return 0;
