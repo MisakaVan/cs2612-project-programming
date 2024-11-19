@@ -45,6 +45,9 @@ struct var_decl_expr;
 
 // `type_list` 可以用于表示 `struct` 与 `union` 的域，以及函数的参数类型列表
 // 用于前者时，类型中的变量名就是域的名字；用于后者时，类型中可以没有变量名
+// e.g. `int a char b` 可以用于 `struct` 的域
+// e.g. `int foo, char` 可以用于函数的参数类型列表
+// e.g. `int * a` 可以用于 `struct` 的域或函数的参数类型列表
 struct type_list {
     struct left_type*     t;
     struct var_decl_expr* e;
