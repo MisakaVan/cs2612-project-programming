@@ -3,7 +3,7 @@
 	#include <stdio.h>
 	#include "lang.h"
 	#include "lexer.h"
-	void yyerror(char *);
+	void yyerror(const char *);
 	int yylex(void);
   struct glob_item_list * root;
 
@@ -397,7 +397,7 @@ NT_ARGUMENT_LIST:
 %%
 
 
-void yyerror(char *s) 
+void yyerror(const char *s) 
 {
   fprintf(stderr, "%s\n", s);
 }
