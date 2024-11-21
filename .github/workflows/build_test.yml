@@ -15,14 +15,25 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3.7.1
 
       - name: Build Docker image
         run: docker build --platform linux/amd64 -t my-dev-container -f .devcontainer/Dockerfile .
 
-      - name: Run make in Docker container
-        run: docker run --platform linux/amd64 --rm -v ${{ github.workspace }}:/workspace -w /workspace my-dev-container make
+      # - name: Run make in Docker container
+      #   run: docker run --platform linux/amd64 --rm -v ${{ github.workspace }}:/workspace -w /workspace my-dev-container make
         # 如果 make 命令成功，GitHub Action 将继续执行。如果 make 命令失败，GitHub Action 将停止并报告错误。
+      - name: Capture make output
+        id: make_output
+        run: |
+          set -o pipefail
+          docker run --platform linux/amd64 --rm -v ${{ github.workspace }}:/workspace -w /workspace my-dev-container make 2>&1 | tee make_output.txt
+
+      - name: Filter/Parse make output
+        run: |
+          if grep -q "shift/reduce conflicts" make_output.txt; then
+            echo "::warning file=make_output.txt::Warning: Found shift/reduce conflicts in make output"
+          fi
