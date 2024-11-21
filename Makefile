@@ -6,6 +6,11 @@ else
 	CFLAGS =
 endif
 
+obj_dir = ./build
+
+build_dir:
+	mkdir -p $(obj_dir)
+
 lexer.h: lang.l
 	flex lang.l
 
@@ -18,28 +23,28 @@ parser.c: lang.y
 parser.h: lang.y
 	bison -o parser.c -d -v lang.y
 
-lang.o: lang.c lang.h
-	$(CC) $(CFLAGS) -c lang.c
+$(obj_dir)/lang.o: lang.c lang.h
+	$(CC) $(CFLAGS) -c lang.c -o $(obj_dir)/lang.o
 
-parser.o: parser.c parser.h lexer.h lang.h
-	$(CC) $(CFLAGS) -c parser.c
+$(obj_dir)/parser.o: parser.c parser.h lexer.h lang.h
+	$(CC) $(CFLAGS) -c parser.c -o $(obj_dir)/parser.o
 
-lexer.o: lexer.c lexer.h parser.h lang.h
-	$(CC) $(CFLAGS) -c lexer.c
+$(obj_dir)/lexer.o: lexer.c lexer.h parser.h lang.h
+	$(CC) $(CFLAGS) -c lexer.c -o $(obj_dir)/lexer.o
 
-lib.o: lib.c lib.h
-	$(CC) $(CFLAGS) -c lib.c
+$(obj_dir)/lib.o: lib.c lib.h
+	$(CC) $(CFLAGS) -c lib.c -o $(obj_dir)/lib.o
 
-main.o: main.c lexer.h parser.h lang.h lib.h
-	$(CC) $(CFLAGS) -c main.c
+$(obj_dir)/main.o: main.c lexer.h parser.h lang.h lib.h
+	$(CC) $(CFLAGS) -c main.c -o $(obj_dir)/main.o
 
-main: lang.o parser.o lexer.o main.o lib.o
-	$(CC) $(CFLAGS) lang.o parser.o lexer.o main.o lib.o -o main
+main: $(obj_dir)/lang.o $(obj_dir)/parser.o $(obj_dir)/lexer.o $(obj_dir)/main.o $(obj_dir)/lib.o
+	$(CC) $(CFLAGS) $(obj_dir)/lang.o $(obj_dir)/parser.o $(obj_dir)/lexer.o $(obj_dir)/main.o $(obj_dir)/lib.o -o main
 
-all: main
+all: build_dir main
 
 clean:
-	rm -f lexer.h lexer.c parser.h parser.c *.o main
+	rm -f lexer.h lexer.c parser.h parser.c $(obj_dir)/*.o main
 
 %.c: %.y
 
