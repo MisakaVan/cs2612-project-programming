@@ -3,7 +3,8 @@
     "dockerFile": "Dockerfile",
     // "workspaceFolder": "/workspace",
     "runArgs": [
-        "--init"
+        "--init",
+        "--hostname=ubuntu"
     ],
     "customizations": {
         "vscode": {
