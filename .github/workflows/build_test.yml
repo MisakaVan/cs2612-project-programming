@@ -1,0 +1,28 @@
+name: Docker Build Test
+
+on:
+  push:
+    branches:
+      - main
+      - '**action'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image
+        run: docker build --platform linux/amd64 -t my-dev-container -f .devcontainer/Dockerfile .
+
+      - name: Run make in Docker container
+        run: docker run --platform linux/amd64 --rm -v ${{ github.workspace }}:/workspace -w /workspace my-dev-container make
+        # 如果 make 命令成功，GitHub Action 将继续执行。如果 make 命令失败，GitHub Action 将停止并报告错误。
