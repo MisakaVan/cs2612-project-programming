@@ -18,3 +18,5 @@ main
 # clangd 
 compile_commands.json
 .cache
+# old version clangd cache is .clangd
+.clangd
