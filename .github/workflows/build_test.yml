@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3.7.1
 
       - name: Build Docker image
         run: docker build --platform linux/amd64 -t my-dev-container -f .devcontainer/Dockerfile .
