@@ -12,7 +12,8 @@
                 "llvm-vs-code-extensions.vscode-clangd"
             ],
             "settings": {
-                "terminal.integrated.shell.linux": "/bin/bash"
+                "terminal.integrated.shell.linux": "/bin/bash",
+                "clangd.path": "/usr/bin/clangd"
             }
         }
     }
