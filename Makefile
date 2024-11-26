@@ -7,44 +7,61 @@ else
 endif
 
 obj_dir = ./build
+src_dir = ./src
+
+LEXER_H = $(src_dir)/lexer.h
+LEXER_C = $(src_dir)/lexer.c
+PARSER_H = $(src_dir)/parser.h
+PARSER_C = $(src_dir)/parser.c
+LANG_H = $(src_dir)/lang.h
+LANG_C = $(src_dir)/lang.c
+LANG_L = $(src_dir)/lang.l
+LANG_Y = $(src_dir)/lang.y
+LIB_H = $(src_dir)/lib.h
+LIB_C = $(src_dir)/lib.c
+MAIN_C = $(src_dir)/main.c
+
+OBJS = $(obj_dir)/lang.o $(obj_dir)/parser.o $(obj_dir)/lexer.o $(obj_dir)/main.o $(obj_dir)/lib.o
+
 
 build_dir:
 	mkdir -p $(obj_dir)
 
-lexer.h: lang.l
-	flex lang.l
 
-lexer.c: lang.l
-	flex lang.l
+$(LEXER_H): $(LANG_L)
+	flex --outfile=$(LEXER_C) --header-file=$(LEXER_H) $(LANG_L)
 
-parser.c: lang.y
-	bison -o parser.c -d lang.y --report=all
+$(LEXER_C): $(LANG_L)
+	flex --outfile=$(LEXER_C) --header-file=$(LEXER_H) $(LANG_L)
 
-parser.h: lang.y
-	bison -o parser.c -d lang.y --report=all
+$(PARSER_C): $(LANG_Y)
+	bison -o $(PARSER_C) -d $(LANG_Y) --report=all
 
-$(obj_dir)/lang.o: lang.c lang.h
-	$(CC) $(CFLAGS) -c lang.c -o $(obj_dir)/lang.o
+$(PARSER_H): $(LANG_Y)
+	bison -o $(PARSER_C) -d $(LANG_Y) --report=all
 
-$(obj_dir)/parser.o: parser.c parser.h lexer.h lang.h
-	$(CC) $(CFLAGS) -c parser.c -o $(obj_dir)/parser.o
+$(obj_dir)/lang.o: $(LANG_C) $(LANG_H)
+	$(CC) $(CFLAGS) -c $(LANG_C) -o $(obj_dir)/lang.o
 
-$(obj_dir)/lexer.o: lexer.c lexer.h parser.h lang.h
-	$(CC) $(CFLAGS) -c lexer.c -o $(obj_dir)/lexer.o
+$(obj_dir)/parser.o: $(PARSER_C) $(PARSER_H) $(LEXER_H) $(LANG_H)
+	$(CC) $(CFLAGS) -c $(PARSER_C) -o $(obj_dir)/parser.o
 
-$(obj_dir)/lib.o: lib.c lib.h
-	$(CC) $(CFLAGS) -c lib.c -o $(obj_dir)/lib.o
+$(obj_dir)/lexer.o: $(LEXER_C) $(LEXER_H) $(PARSER_H) $(LANG_H)
+	$(CC) $(CFLAGS) -c $(LEXER_C) -o $(obj_dir)/lexer.o
 
-$(obj_dir)/main.o: main.c lexer.h parser.h lang.h lib.h
-	$(CC) $(CFLAGS) -c main.c -o $(obj_dir)/main.o
+$(obj_dir)/lib.o: $(LIB_C) $(LIB_H)
+	$(CC) $(CFLAGS) -c $(LIB_C) -o $(obj_dir)/lib.o
 
-main: $(obj_dir)/lang.o $(obj_dir)/parser.o $(obj_dir)/lexer.o $(obj_dir)/main.o $(obj_dir)/lib.o
-	$(CC) $(CFLAGS) $(obj_dir)/lang.o $(obj_dir)/parser.o $(obj_dir)/lexer.o $(obj_dir)/main.o $(obj_dir)/lib.o -o main
+$(obj_dir)/main.o: $(MAIN_C) $(LEXER_H) $(PARSER_H) $(LANG_H) $(LIB_H)
+	$(CC) $(CFLAGS) -c $(MAIN_C) -o $(obj_dir)/main.o
+
+main: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o main
 
 all: build_dir main
 
 clean:
-	rm -f lexer.h lexer.c parser.h parser.c $(obj_dir)/*.o main
+	rm -f $(LEXER_H) $(LEXER_C) $(PARSER_H) $(PARSER_C) $(obj_dir)/*.o main
 
 %.c: %.y
 
