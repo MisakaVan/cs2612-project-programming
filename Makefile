@@ -18,10 +18,10 @@ lexer.c: lang.l
 	flex lang.l
 
 parser.c: lang.y
-	bison -o parser.c -d -v lang.y
+	bison -o parser.c -d lang.y --report=all
 
 parser.h: lang.y
-	bison -o parser.c -d -v lang.y
+	bison -o parser.c -d lang.y --report=all
 
 $(obj_dir)/lang.o: lang.c lang.h
 	$(CC) $(CFLAGS) -c lang.c -o $(obj_dir)/lang.o
