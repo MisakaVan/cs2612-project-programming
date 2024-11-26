@@ -1,6 +1,8 @@
 {
     "name": "Ubuntu Dev Container",
-    "dockerFile": "Dockerfile",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
     // "workspaceFolder": "/workspace",
     "runArgs": [
         "--init",
@@ -18,4 +20,5 @@
             }
         }
     }
+    
 }
