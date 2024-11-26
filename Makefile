@@ -21,6 +21,8 @@ LIB_H = $(src_dir)/lib.h
 LIB_C = $(src_dir)/lib.c
 MAIN_C = $(src_dir)/main.c
 
+PARSER_REPORT = parser_report.txt
+
 OBJS = $(obj_dir)/lang.o $(obj_dir)/parser.o $(obj_dir)/lexer.o $(obj_dir)/main.o $(obj_dir)/lib.o
 
 
@@ -35,10 +37,10 @@ $(LEXER_C): $(LANG_L)
 	flex --outfile=$(LEXER_C) --header-file=$(LEXER_H) $(LANG_L)
 
 $(PARSER_C): $(LANG_Y)
-	bison -o $(PARSER_C) -d $(LANG_Y) --report=all
+	bison -o $(PARSER_C) -d $(LANG_Y) --report=all --report-file=$(PARSER_REPORT)
 
 $(PARSER_H): $(LANG_Y)
-	bison -o $(PARSER_C) -d $(LANG_Y) --report=all
+	bison -o $(PARSER_C) -d $(LANG_Y) --report=all --report-file=$(PARSER_REPORT)
 
 $(obj_dir)/lang.o: $(LANG_C) $(LANG_H)
 	$(CC) $(CFLAGS) -c $(LANG_C) -o $(obj_dir)/lang.o
@@ -61,7 +63,7 @@ main: $(OBJS)
 all: build_dir main
 
 clean:
-	rm -f $(LEXER_H) $(LEXER_C) $(PARSER_H) $(PARSER_C) $(obj_dir)/*.o main
+	rm -f $(LEXER_H) $(LEXER_C) $(PARSER_H) $(PARSER_C) $(obj_dir)/*.o main $(PARSER_REPORT)
 
 %.c: %.y
 
