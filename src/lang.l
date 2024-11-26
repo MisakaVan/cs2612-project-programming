@@ -1,5 +1,5 @@
 %option noyywrap yylineno
-%option outfile="lexer.c" header-file="lexer.h"
+
 %{
 #include "lib.h"
 #include "lang.h"
