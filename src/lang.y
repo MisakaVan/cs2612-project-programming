@@ -78,6 +78,7 @@
   // argument list is a list of arguments seperated by comma.
   // argument ::= left_type annon_right_type_expr
 %type <typeList>     NT_ARGUMENT_LIST
+%type <typeList>     NT_ARGUMENT_LIST_NON_EMPTY
 
 
 
@@ -409,11 +410,17 @@ NT_ARGUMENT_LIST:
   {
     $$ = TTNil();
   }
-| NT_LEFT_TYPE NT_ANNON_RIGHT_TYPE_EXPR
+| NT_ARGUMENT_LIST_NON_EMPTY
+  {
+    $$ = $1;
+  }
+
+NT_ARGUMENT_LIST_NON_EMPTY:
+  NT_LEFT_TYPE NT_ANNON_RIGHT_TYPE_EXPR
   {
     $$ = TTCons($1, $2, TTNil());
   }
-| NT_LEFT_TYPE NT_ANNON_RIGHT_TYPE_EXPR TM_COMMA NT_ARGUMENT_LIST
+| NT_LEFT_TYPE NT_ANNON_RIGHT_TYPE_EXPR TM_COMMA NT_ARGUMENT_LIST_NON_EMPTY
   {
     $$ = TTCons($1, $2, $4);
   }
