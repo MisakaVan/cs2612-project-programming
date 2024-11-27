@@ -6,6 +6,8 @@ else
 	CFLAGS =
 endif
 
+CFLAGS += -DASTPRINT
+
 obj_dir = ./build
 src_dir = ./src
 
@@ -19,11 +21,14 @@ LANG_L = $(src_dir)/lang.l
 LANG_Y = $(src_dir)/lang.y
 LIB_H = $(src_dir)/lib.h
 LIB_C = $(src_dir)/lib.c
+ASTPRINT_H = $(src_dir)/astprint.h
+ASTPRINT_C = $(src_dir)/astprint.c
 MAIN_C = $(src_dir)/main.c
 
 PARSER_REPORT = parser_report.txt
 
-OBJS = $(obj_dir)/lang.o $(obj_dir)/parser.o $(obj_dir)/lexer.o $(obj_dir)/main.o $(obj_dir)/lib.o
+OBJS = $(obj_dir)/lang.o $(obj_dir)/parser.o \
+ $(obj_dir)/lexer.o $(obj_dir)/main.o $(obj_dir)/lib.o $(obj_dir)/astprint.o
 
 
 build_dir:
@@ -53,6 +58,9 @@ $(obj_dir)/lexer.o: $(LEXER_C) $(LEXER_H) $(PARSER_H) $(LANG_H)
 
 $(obj_dir)/lib.o: $(LIB_C) $(LIB_H)
 	$(CC) $(CFLAGS) -c $(LIB_C) -o $(obj_dir)/lib.o
+
+$(obj_dir)/astprint.o: $(ASTPRINT_C) $(ASTPRINT_H)
+	$(CC) $(CFLAGS) -c $(ASTPRINT_C) -o $(obj_dir)/astprint.o
 
 $(obj_dir)/main.o: $(MAIN_C) $(LEXER_H) $(PARSER_H) $(LANG_H) $(LIB_H)
 	$(CC) $(CFLAGS) -c $(MAIN_C) -o $(obj_dir)/main.o
