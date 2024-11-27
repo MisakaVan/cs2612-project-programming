@@ -72,6 +72,7 @@
   // named_right_type_expr has a core identifier.
   // annon_right_type_expr has no core identifier / empty in the core.
 %type <varDeclExpr>  NT_NAMED_RIGHT_TYPE_EXPR
+%type <varDeclExpr>  NT_ANNON_RIGHT_TYPE_EXPR_NON_EMPTY
 %type <varDeclExpr>  NT_ANNON_RIGHT_TYPE_EXPR
 
   // argument list is a list of arguments seperated by comma.
@@ -353,28 +354,52 @@ NT_NAMED_RIGHT_TYPE_EXPR:
   }
 ;
 
-NT_ANNON_RIGHT_TYPE_EXPR:
-  /* can be empty */
-  /* empty */
+NT_ANNON_RIGHT_TYPE_EXPR_NON_EMPTY:
+  TM_STAR
   {
-    $$ = TOrigType(NULL);
+    // * <empty>
+    $$ = TPtrType(TOrigType(NULL));
   }
-| TM_STAR NT_ANNON_RIGHT_TYPE_EXPR
+| TM_STAR NT_ANNON_RIGHT_TYPE_EXPR_NON_EMPTY
   {
+    // * <expr>
     $$ = TPtrType($2);
   }
-| NT_ANNON_RIGHT_TYPE_EXPR TM_LEFT_BRACKET TM_NAT TM_RIGHT_BRACKET
+| TM_LEFT_BRACKET TM_NAT TM_RIGHT_BRACKET
   {
+    // <empty> [nat]
+    $$ = TArrayType(TOrigType(NULL), $2);
+  }
+| NT_ANNON_RIGHT_TYPE_EXPR_NON_EMPTY TM_LEFT_BRACKET TM_NAT TM_RIGHT_BRACKET
+  {
+    // <expr> [nat]
     $$ = TArrayType($1, $3);
   }
-| NT_ANNON_RIGHT_TYPE_EXPR TM_LEFT_PAREN NT_ARGUMENT_LIST TM_RIGHT_PAREN
+| TM_LEFT_PAREN NT_ARGUMENT_LIST TM_RIGHT_PAREN
   {
+    // <empty> (args)
+    $$ = TFuncType(TOrigType(NULL), $2);
+  }
+| NT_ANNON_RIGHT_TYPE_EXPR_NON_EMPTY TM_LEFT_PAREN NT_ARGUMENT_LIST TM_RIGHT_PAREN
+  {
+    // <expr> (args)
     $$ = TFuncType($1, $3);
   }
-| TM_LEFT_PAREN NT_ANNON_RIGHT_TYPE_EXPR TM_RIGHT_PAREN
+| TM_LEFT_PAREN NT_ANNON_RIGHT_TYPE_EXPR_NON_EMPTY TM_RIGHT_PAREN
   {
     /* support for parentheses */
     $$ = $2;
+  }
+;
+
+NT_ANNON_RIGHT_TYPE_EXPR:
+  NT_ANNON_RIGHT_TYPE_EXPR_NON_EMPTY
+  {
+    $$ = $1;
+  }
+| /* empty */
+  {
+    $$ = TOrigType(NULL);
   }
 ;
 
