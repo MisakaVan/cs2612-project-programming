@@ -30,7 +30,7 @@ jobs:
         id: make_output
         run: |
           set -o pipefail
-          docker run --platform linux/amd64 --rm -v ${{ github.workspace }}:/workspace -w /workspace my-dev-container make 2>&1 | tee make_output.txt
+          docker run --platform linux/amd64 --rm -v ${{ github.workspace }}:/workspace -w /workspace -u root my-dev-container make 2>&1 | tee make_output.txt
 
       - name: Filter/Parse make output
         run: |
