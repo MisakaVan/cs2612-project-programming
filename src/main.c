@@ -1,7 +1,11 @@
 #include "lang.h"
 #include "lexer.h"
 #include "parser.h"
+#include "astprint.h"
 #include <stdio.h>
+
+// use the new printer
+// #define ASTPRINT
 
 // clang-format off
 extern struct glob_item_list *root;
@@ -24,5 +28,12 @@ int main(int argc, char** argv) {
     }
     yyparse();
     fclose(yyin);
+
+#ifdef ASTPRINT
+    astprint_glob_item_list(root);
+#else
     print_glob_item_list(root);
+#endif
+
+    return 0;
 }
