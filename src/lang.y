@@ -224,11 +224,11 @@ NT_FIELD_LIST:
     // struct type_list* TTNil()
     $$ = TTNil();
   }
-| NT_LEFT_TYPE NT_NAMED_RIGHT_TYPE_EXPR NT_FIELD_LIST
+| NT_LEFT_TYPE NT_NAMED_RIGHT_TYPE_EXPR TM_SEMICOL NT_FIELD_LIST
   {
     // struct type_list* TTCons(struct left_type* t, struct var_decl_expr* e,
     //                   struct type_list* next)
-    $$ = TTCons($1, $2, $3);
+    $$ = TTCons($1, $2, $4);
   }
 ;
 

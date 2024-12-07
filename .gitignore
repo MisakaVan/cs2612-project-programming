@@ -15,6 +15,9 @@ main
 # output files
 *.output
 
+# testcase output
+*.out
+
 # clangd 
 compile_commands.json
 .cache

@@ -1,3 +1,6 @@
+# include batchtest.mk to use the test_all and clean_test_all targets.
+include batchtest.mk
+
 # macro for gcc
 CC = gcc
 ifdef V
