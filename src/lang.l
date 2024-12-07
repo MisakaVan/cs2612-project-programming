@@ -46,6 +46,8 @@
 
 [ \t\n\r]         { /* ignore white space */ }
 
+"//".*          { /* ignore line comment */ }
+
 .               { printf("Unrecognized character: '%s'\n", yytext); return -1; }
 
 %%
