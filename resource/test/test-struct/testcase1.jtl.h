@@ -15,3 +15,6 @@ struct Bar {
     // declare a function pointer
     void (*func)(int);
 };
+
+// define an empty struct
+struct EmptyStruct {};
