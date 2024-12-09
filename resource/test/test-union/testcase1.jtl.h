@@ -16,3 +16,6 @@ union Bar {
     // declare a function pointer
     void (*func)(int);
 };
+
+// define an empty union
+union EmptyUnion {};
