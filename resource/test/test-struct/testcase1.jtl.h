@@ -18,3 +18,27 @@ struct Bar {
 
 // define an empty struct
 struct EmptyStruct {};
+
+// define a struct with newly defined type
+struct WeatherConditions {
+    enum Weather {
+        SUNNY,
+        RAINY,
+        CLOUDY,
+        SNOWY
+    } weather;
+    struct Wind {
+        char* direction;
+        int speed;
+    } wind;
+    union {
+        char* warning[5];
+        char* advice;
+    } info;
+    int temperature;
+};
+
+// define a complex struct
+struct ComplexStruct {
+    WeatherConditions (*func1)(int, struct Foo*);
+};

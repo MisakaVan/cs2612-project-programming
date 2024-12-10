@@ -23,3 +23,7 @@ typedef int *
                 [5]
             )
         (char, char);
+
+struct TestStruct {
+    int_ptr_t (*func)(func_ptr_t, int_ptr_t);
+};
