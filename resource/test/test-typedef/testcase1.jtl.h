@@ -12,7 +12,7 @@ typedef int *arr_of_ptr_to_int_t[10]; // array of pointers to int
 typedef int (*ptr_to_arr_of_int_t)[10]; // pointer to array of int
 
 // typedef with function pointer
-// points to (int, char) -> char
+// points to (int, int) -> char
 typedef char (*func_ptr_t)(int, int);
 // points to (int, int, int) -> pointer to array of pointer to (char, char) -> pointer to int
 typedef int *
