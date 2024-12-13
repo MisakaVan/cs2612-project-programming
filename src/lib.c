@@ -107,3 +107,113 @@ void SLL_hash_delete(struct SLL_hash_table* t, char* key) {
         d = &((*d)->tail);
     }
 }
+
+struct SLL_hash_table* identifier_table;
+
+struct IdentifierInfo* init_identifier_info() {
+    struct IdentifierInfo* res =
+        (struct IdentifierInfo*)malloc(sizeof(struct IdentifierInfo));
+    if (res == NULL) {
+        printf("Failure in malloc.\n");
+        exit(0);
+    }
+    res->flags = 0;
+    for (int i = 0; i < IDENT_TYPE_COUNT; i++) {
+        res->lineno[i] = -1;
+    }
+    return res;
+}
+
+
+/*
+struct, union, enum   names should not overlap with each other.
+
+*/
+
+int conflict_identifier_register_lut[6][6] = {
+    {1, 1, 0, 0, 0, 1}, // variable
+    {1, 1, 0, 0, 0, 1}, // enumerator
+    {0, 0, 1, 1, 1, 0}, // struct
+    {0, 0, 1, 1, 1, 0}, // union
+    {0, 0, 1, 1, 1, 0}, // enum
+    {1, 1, 0, 0, 0, 1}, // typedef
+};
+
+char* identifier_type_str[6] = {
+    "variable",
+    "enumerator",
+    "struct",
+    "union",
+    "enum",
+    "typedef",
+};
+
+// use yylineno to record the line number of the first registration
+extern int yylineno;
+
+void register_identifier(char* name, enum IdentifierType type) {
+    pdebug("Line %d:\n", yylineno);
+    pdebug("Registering identifier %s as %s\n", name, identifier_type_str[type]);
+
+    if (name==NULL){
+        pdebug("Identifier name is NULL (Anonymous), skip registering\n");
+        return;
+    }
+
+    struct IdentifierInfo *info = NULL;
+
+    info = (struct IdentifierInfo*)SLL_hash_get(identifier_table, name);
+    if ((long long)info == NONE) {
+        pdebug("Identifier %s is not in the hashtable\n", name);
+        info = init_identifier_info();
+        SLL_hash_set(identifier_table, name, (long long)info);
+    }
+    else{
+        pdebug("Identifier %s is in the hashtable\n", name);
+    }
+
+    pdebug("Identifier %s flags: %lld\n", name, info->flags);
+
+    int conflict = 0;
+    // check if the identifier is already registered.
+    for (int i = 0; i < IDENT_TYPE_COUNT; i++) {
+        if (conflict_identifier_register_lut[type][i] == 0){
+            continue;
+        }
+        if (info->flags & (1 << i)) {
+            // identifier is already registered as a conflicting type.
+            printf("Warning: (Line %d) Identifier %s is already registered as %s at line %d\n", yylineno, name, identifier_type_str[i], info->lineno[i]);
+            conflict = 1;
+        }
+    }
+
+    if (!conflict) {
+        pdebug("No conflict. Now register %s as %s\n", name, identifier_type_str[type]);
+        info->flags |= (1 << type);
+        info->lineno[type] = yylineno; // the line number of the first registration
+    }
+}
+
+void register_identifier_variable(char* name) {
+    register_identifier(name, IDENT_TYPE_VARIABLE);
+}
+
+void register_identifier_enumerator(char* name) {
+    register_identifier(name, IDENT_TYPE_ENUMERATOR);
+}
+
+void register_identifier_struct(char* name) {
+    register_identifier(name, IDENT_TYPE_STRUCT);
+}
+
+void register_identifier_union(char* name) {
+    register_identifier(name, IDENT_TYPE_UNION);
+}
+
+void register_identifier_enum(char* name) {
+    register_identifier(name, IDENT_TYPE_ENUM);
+}
+
+void register_identifier_typedef(char* name) {
+    register_identifier(name, IDENT_TYPE_TYPEDEF);
+}
