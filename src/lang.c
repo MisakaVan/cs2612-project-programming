@@ -1,4 +1,5 @@
 #include "lang.h"
+#include "lib.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -78,6 +79,9 @@ struct enum_ele_list* TECons(char* name, struct enum_ele_list* next) {
     struct enum_ele_list* res = new_enum_ele_list_ptr();
     res->name = name;
     res->next = next;
+
+    register_identifier_enumerator(name);
+
     return res;
 }
 
@@ -85,6 +89,9 @@ struct left_type* TStructType(char* name) {
     struct left_type* res = new_left_type_ptr();
     res->t = T_STRUCT_TYPE;
     res->d.STRUCT_TYPE.name = name;
+
+    check_identifier_struct(name);
+
     return res;
 }
 
@@ -93,6 +100,8 @@ struct left_type* TNewStructType(char* name, struct type_list* fld) {
     res->t = T_NEW_STRUCT_TYPE;
     res->d.NEW_STRUCT_TYPE.name = name;
     res->d.NEW_STRUCT_TYPE.fld = fld;
+
+    register_identifier_struct(name);
     return res;
 }
 
@@ -100,6 +109,9 @@ struct left_type* TUnionType(char* name) {
     struct left_type* res = new_left_type_ptr();
     res->t = T_UNION_TYPE;
     res->d.UNION_TYPE.name = name;
+
+    check_identifier_union(name);
+
     return res;
 }
 
@@ -108,6 +120,9 @@ struct left_type* TNewUnionType(char* name, struct type_list* fld) {
     res->t = T_NEW_UNION_TYPE;
     res->d.NEW_UNION_TYPE.name = name;
     res->d.NEW_UNION_TYPE.fld = fld;
+
+    register_identifier_union(name);
+
     return res;
 }
 
@@ -115,6 +130,9 @@ struct left_type* TEnumType(char* name) {
     struct left_type* res = new_left_type_ptr();
     res->t = T_ENUM_TYPE;
     res->d.ENUM_TYPE.name = name;
+
+    check_identifier_enum(name);
+
     return res;
 }
 
@@ -123,6 +141,9 @@ struct left_type* TNewEnumType(char* name, struct enum_ele_list* ele) {
     res->t = T_NEW_ENUM_TYPE;
     res->d.NEW_ENUM_TYPE.name = name;
     res->d.NEW_ENUM_TYPE.ele = ele;
+
+    register_identifier_enum(name);
+
     return res;
 }
 
@@ -142,6 +163,9 @@ struct left_type* TDefinedType(char* name) {
     struct left_type* res = new_left_type_ptr();
     res->t = T_DEFINED_TYPE;
     res->d.DEFINED_TYPE.name = name;
+
+    check_identifier_typedef(name);
+
     return res;
 }
 
@@ -182,6 +206,9 @@ struct glob_item* TStructDef(char* name, struct type_list* fld) {
     res->t = T_STRUCT_DEF;
     res->d.STRUCT_DEF.name = name;
     res->d.STRUCT_DEF.fld = fld;
+
+    register_identifier_struct(name);
+
     return res;
 }
 
@@ -189,6 +216,9 @@ struct glob_item* TStructDecl(char* name) {
     struct glob_item* res = new_glob_item_ptr();
     res->t = T_STRUCT_DECL;
     res->d.STRUCT_DECL.name = name;
+
+    register_identifier_struct(name);
+
     return res;
 }
 
@@ -197,6 +227,9 @@ struct glob_item* TUnionDef(char* name, struct type_list* fld) {
     res->t = T_UNION_DEF;
     res->d.UNION_DEF.name = name;
     res->d.UNION_DEF.fld = fld;
+
+    register_identifier_union(name);
+
     return res;
 }
 
@@ -204,6 +237,9 @@ struct glob_item* TUnionDecl(char* name) {
     struct glob_item* res = new_glob_item_ptr();
     res->t = T_UNION_DECL;
     res->d.UNION_DECL.name = name;
+
+    register_identifier_union(name);
+
     return res;
 }
 
@@ -212,6 +248,9 @@ struct glob_item* TEnumDef(char* name, struct enum_ele_list* ele) {
     res->t = T_ENUM_DEF;
     res->d.ENUM_DEF.name = name;
     res->d.ENUM_DEF.ele = ele;
+
+    register_identifier_enum(name);
+
     return res;
 }
 
@@ -219,6 +258,9 @@ struct glob_item* TEnumDecl(char* name) {
     struct glob_item* res = new_glob_item_ptr();
     res->t = T_ENUM_DECL;
     res->d.ENUM_DECL.name = name;
+
+    register_identifier_enum(name);
+
     return res;
 }
 
@@ -227,6 +269,26 @@ struct glob_item* TTypeDef(struct left_type* t, struct var_decl_expr* e) {
     res->t = T_TYPE_DEF;
     res->d.TYPE_DEF.t = t;
     res->d.TYPE_DEF.e = e;
+
+    // get the core type name and register it
+    struct var_decl_expr* ptr = e;
+    while (ptr->t != T_ORIG_TYPE) {
+        switch (ptr->t) {
+            case T_PTR_TYPE:
+                ptr = ptr->d.PTR_TYPE.base;
+                break;
+            case T_ARRAY_TYPE:
+                ptr = ptr->d.ARRAY_TYPE.base;
+                break;
+            case T_FUNC_TYPE:
+                ptr = ptr->d.FUNC_TYPE.ret;
+                break;
+            case T_ORIG_TYPE:
+                break;
+        }
+    }
+    register_identifier_typedef(ptr->d.ORIG_TYPE.name);
+
     return res;
 }
 
@@ -235,6 +297,25 @@ struct glob_item* TVarDef(struct left_type* t, struct var_decl_expr* e) {
     res->t = T_VAR_DEF;
     res->d.VAR_DEF.t = t;
     res->d.VAR_DEF.e = e;
+
+    // get the core type name and register it
+    struct var_decl_expr* ptr = e;
+    while (ptr->t != T_ORIG_TYPE) {
+        switch (ptr->t) {
+            case T_PTR_TYPE:
+                ptr = ptr->d.PTR_TYPE.base;
+                break;
+            case T_ARRAY_TYPE:
+                ptr = ptr->d.ARRAY_TYPE.base;
+                break;
+            case T_FUNC_TYPE:
+                ptr = ptr->d.FUNC_TYPE.ret;
+                break;
+            case T_ORIG_TYPE:
+                break;
+        }
+    }
+    register_identifier_variable(ptr->d.ORIG_TYPE.name);
     return res;
 }
 

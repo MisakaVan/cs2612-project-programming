@@ -2,6 +2,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "astprint.h"
+#include "lib.h"
 #include <stdio.h>
 
 // use the new printer
@@ -9,6 +10,7 @@
 
 // clang-format off
 extern struct glob_item_list *root;
+extern struct SLL_hash_table *identifier_table;
 int yyparse();
 // clang-format on
 
@@ -21,6 +23,10 @@ int main(int argc, char** argv) {
         printf("Error, too many arguments!\n");
         return 0;
     }
+
+    // initialize the identifier table
+    identifier_table = init_SLL_hash(); 
+
     yyin = fopen(argv[1], "rb");
     if (yyin == NULL) {
         printf("File %s can't be opened.\n", argv[1]);
