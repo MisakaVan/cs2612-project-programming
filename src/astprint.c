@@ -7,10 +7,11 @@
 #define INDENT_STRIDE 2
 #endif
 
+typedef void (*var_decl_expr_printer_t)(struct var_decl_expr* e);
+
 // global variable `var_decl_expr_printer` is
 // used to switch the printer function
-static void (*var_decl_expr_printer)(struct var_decl_expr* e) =
-    &astprint_var_decl_expr_backtrace;
+static var_decl_expr_printer_t var_decl_expr_printer = &astprint_var_decl_expr_backtrace;
 
 static int       _indent = 0;
 static const int _indent_stride = INDENT_STRIDE;
@@ -246,8 +247,10 @@ static void astprint_var_decl_expr_impl(struct var_decl_expr* e) {
 }
 
 void astprint_var_decl_expr(struct var_decl_expr* e) {
+    var_decl_expr_printer_t old_var_decl_expr_printer = var_decl_expr_printer;
     var_decl_expr_printer = &astprint_var_decl_expr;
     astprint_var_decl_expr_impl(e);
+    var_decl_expr_printer = old_var_decl_expr_printer;
 }
 
 // first go all the way down to the base type.
@@ -285,9 +288,33 @@ static void astprint_var_decl_expr_backtrace_impl(struct var_decl_expr* e) {
 }
 
 void astprint_var_decl_expr_backtrace(struct var_decl_expr* e) {
+    var_decl_expr_printer_t old_var_decl_expr_printer = var_decl_expr_printer;
     var_decl_expr_printer = &astprint_var_decl_expr_backtrace;
     int old_indent = _indent;
     astprint_var_decl_expr_backtrace_impl(e);
     indent(), printf("the LHS type\n");
     _indent = old_indent;
+    var_decl_expr_printer = old_var_decl_expr_printer;
+}
+
+
+void astprint_var_decl_expr_both(struct var_decl_expr* e) {
+    indent(), printf("(As AST)\n");
+    astprint_var_decl_expr(e);
+    indent(), printf("(As Human Language)\n");
+    astprint_var_decl_expr_backtrace(e);
+}
+
+void set_var_decl_expr_printer(enum VarDeclExprPrinter p) {
+    switch (p) {
+    case VAR_DECL_EXPR_PRINTER_AST:
+        var_decl_expr_printer = &astprint_var_decl_expr;
+        break;
+    case VAR_DECL_EXPR_PRINTER_BACKTRACE:
+        var_decl_expr_printer = &astprint_var_decl_expr_backtrace;
+        break;
+    case VAR_DECL_EXPR_PRINTER_BOTH:
+        var_decl_expr_printer = &astprint_var_decl_expr_both;
+        break;
+    }
 }

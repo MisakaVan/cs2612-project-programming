@@ -30,6 +30,7 @@ int main(int argc, char** argv) {
     fclose(yyin);
 
 #ifdef ASTPRINT
+    set_var_decl_expr_printer(VAR_DECL_EXPR_PRINTER_BOTH);
     astprint_glob_item_list(root);
 #else
     print_glob_item_list(root);

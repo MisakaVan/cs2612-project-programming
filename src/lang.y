@@ -9,6 +9,7 @@
 
   #define YYERROR_VERBOSE
 %}
+%define parse.error detailed // enable detailed error messages rather than "syntax error"
 
   /* define the yylval union */
 %union {
@@ -432,4 +433,5 @@ NT_ARGUMENT_LIST_NON_EMPTY:
 void yyerror(const char *s) 
 {
   fprintf(stderr, "%s\n", s);
+  printf("Syntax error at line %d. Message: %s\n", yylineno, s);
 }
