@@ -10,7 +10,7 @@
 - [x] 有三个移入/规约冲突（关于 `annon-right-type` ） 这些冲突是因为这个标注类型可能为空导致的。
 - [ ] 利用 `lib.h` 给的哈希表存放一些类型前置定义
   - [x] 检查在全局变量/Struct/Union/Enum/Typedef声明中出现的标识符是否已经在全局出现过
-  - [ ] 检查Struct/Union/Enum/Typedef被使用时是否已经有前置定义
+  - [x] 检查Struct/Union/Enum/Typedef被使用时是否已经有前置定义
   - [ ] 检查Struct/Union的字段内是否有变量名重复
 - [ ] 完善build、test、使用文档
 

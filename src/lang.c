@@ -90,7 +90,7 @@ struct left_type* TStructType(char* name) {
     res->t = T_STRUCT_TYPE;
     res->d.STRUCT_TYPE.name = name;
 
-    // TODO: check if the struct name is already declared
+    check_identifier_struct(name);
 
     return res;
 }
@@ -110,7 +110,7 @@ struct left_type* TUnionType(char* name) {
     res->t = T_UNION_TYPE;
     res->d.UNION_TYPE.name = name;
 
-    // TODO: check if the union name is already declared
+    check_identifier_union(name);
 
     return res;
 }
@@ -131,7 +131,7 @@ struct left_type* TEnumType(char* name) {
     res->t = T_ENUM_TYPE;
     res->d.ENUM_TYPE.name = name;
 
-    // TODO: check if the enum name is already declared
+    check_identifier_enum(name);
 
     return res;
 }
@@ -164,7 +164,7 @@ struct left_type* TDefinedType(char* name) {
     res->t = T_DEFINED_TYPE;
     res->d.DEFINED_TYPE.name = name;
 
-    // TODO: check if the defined type name is already declared
+    check_identifier_typedef(name);
 
     return res;
 }

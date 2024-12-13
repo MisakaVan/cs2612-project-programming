@@ -217,3 +217,43 @@ void register_identifier_enum(char* name) {
 void register_identifier_typedef(char* name) {
     register_identifier(name, IDENT_TYPE_TYPEDEF);
 }
+
+void check_identifier(char *name, enum IdentifierType using_type){
+    pdebug("Line %d:\n", yylineno);
+    struct IdentifierInfo *info = NULL;
+    info = (struct IdentifierInfo*)SLL_hash_get(identifier_table, name);
+    if ((long long)info == NONE) {
+        printf("Warning: (Line %d) Identifier %s has never been registered\n", yylineno, name);
+        return;
+    }
+    pdebug("Identifier %s flags: %lld\n", name, info->flags);
+
+    if (!(info->flags & (1 << using_type))) {
+        printf("Warning: (Line %d) Identifier %s is not registered as %s\n", yylineno, name, identifier_type_str[using_type]);
+        for (int i = 0; i < IDENT_TYPE_COUNT; i++) {
+            if (info->flags & (1 << i)) {
+                pdebug("  - Identifier %s is registered as %s at line %d\n", name, identifier_type_str[i], info->lineno[i]);
+            }
+        }
+    }
+    else {
+        pdebug("OK: Identifier %s has been registered as %s at line %d\n", name, identifier_type_str[using_type], info->lineno[using_type]);
+    }
+}
+
+void check_identifier_enum(char *name){
+    check_identifier(name, IDENT_TYPE_ENUM);
+}
+
+void check_identifier_struct(char *name){
+    check_identifier(name, IDENT_TYPE_STRUCT);
+}
+
+void check_identifier_union(char *name){
+    check_identifier(name, IDENT_TYPE_UNION);
+}
+
+void check_identifier_typedef(char *name){
+    check_identifier(name, IDENT_TYPE_TYPEDEF);
+}
+

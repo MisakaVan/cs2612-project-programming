@@ -59,5 +59,11 @@ void register_identifier_union(char *name);
 void register_identifier_enum(char *name);
 void register_identifier_typedef(char *name);
 
+// check if the identifier is already declared when using it
+void check_identifier(char *name, enum IdentifierType using_type);
+void check_identifier_enum(char *name);
+void check_identifier_struct(char *name);
+void check_identifier_union(char *name);
+void check_identifier_typedef(char *name);
 
 #endif
