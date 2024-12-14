@@ -271,22 +271,7 @@ struct glob_item* TTypeDef(struct left_type* t, struct var_decl_expr* e) {
     res->d.TYPE_DEF.e = e;
 
     // get the core type name and register it
-    struct var_decl_expr* ptr = e;
-    while (ptr->t != T_ORIG_TYPE) {
-        switch (ptr->t) {
-            case T_PTR_TYPE:
-                ptr = ptr->d.PTR_TYPE.base;
-                break;
-            case T_ARRAY_TYPE:
-                ptr = ptr->d.ARRAY_TYPE.base;
-                break;
-            case T_FUNC_TYPE:
-                ptr = ptr->d.FUNC_TYPE.ret;
-                break;
-            case T_ORIG_TYPE:
-                break;
-        }
-    }
+    struct var_decl_expr* ptr = get_core_type(e);
     register_identifier_typedef(ptr->d.ORIG_TYPE.name);
 
     return res;
@@ -299,22 +284,7 @@ struct glob_item* TVarDef(struct left_type* t, struct var_decl_expr* e) {
     res->d.VAR_DEF.e = e;
 
     // get the core type name and register it
-    struct var_decl_expr* ptr = e;
-    while (ptr->t != T_ORIG_TYPE) {
-        switch (ptr->t) {
-            case T_PTR_TYPE:
-                ptr = ptr->d.PTR_TYPE.base;
-                break;
-            case T_ARRAY_TYPE:
-                ptr = ptr->d.ARRAY_TYPE.base;
-                break;
-            case T_FUNC_TYPE:
-                ptr = ptr->d.FUNC_TYPE.ret;
-                break;
-            case T_ORIG_TYPE:
-                break;
-        }
-    }
+    struct var_decl_expr* ptr = get_core_type(e);
     register_identifier_variable(ptr->d.ORIG_TYPE.name);
     return res;
 }

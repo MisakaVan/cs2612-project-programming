@@ -1,7 +1,6 @@
 #ifndef LANG_H_INCLUDED
 #define LANG_H_INCLUDED
 
-#include "lib.h"
 #include <stdio.h>
 #include <stdlib.h>
 

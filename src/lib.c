@@ -1,4 +1,5 @@
 #include "lib.h"
+#include "lang.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -109,6 +110,28 @@ void SLL_hash_delete(struct SLL_hash_table* t, char* key) {
 }
 
 struct SLL_hash_table* identifier_table;
+
+
+
+struct var_decl_expr *get_core_type(struct var_decl_expr *ptr){
+    while (ptr->t != T_ORIG_TYPE) {
+        switch (ptr->t) {
+            case T_PTR_TYPE:
+                ptr = ptr->d.PTR_TYPE.base;
+                break;
+            case T_ARRAY_TYPE:
+                ptr = ptr->d.ARRAY_TYPE.base;
+                break;
+            case T_FUNC_TYPE:
+                ptr = ptr->d.FUNC_TYPE.ret;
+                break;
+            case T_ORIG_TYPE:
+                break;
+        }
+    }
+    return ptr;
+}
+
 
 struct IdentifierInfo* init_identifier_info() {
     struct IdentifierInfo* res =

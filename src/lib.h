@@ -1,6 +1,8 @@
 #ifndef LIB_H_INCLUDED
 #define LIB_H_INCLUDED
 
+#include "lang.h"
+
 #define NONE 4294967295
 
 #define VERBOSE 1
@@ -20,6 +22,11 @@ long long SLL_hash_get(struct SLL_hash_table * t, char * key);
 void SLL_hash_set(struct SLL_hash_table * t, char * key, long long value);
 void SLL_hash_delete(struct SLL_hash_table * t, char * key);
 // clang-format on
+
+// helper functions
+
+// return the innermost core type. gaurenteed that ret->t == T_ORIG_TYPE.
+struct var_decl_expr *get_core_type(struct var_decl_expr *ptr);
 
 
 enum IdentifierType {
