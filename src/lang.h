@@ -1,7 +1,6 @@
 #ifndef LANG_H_INCLUDED
 #define LANG_H_INCLUDED
 
-#include "lib.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -104,6 +103,7 @@ struct var_decl_expr {
     union {
         struct {
             char* name;
+            int lineno;
         } ORIG_TYPE;
         struct {
             struct var_decl_expr* base;

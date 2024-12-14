@@ -102,6 +102,7 @@ struct left_type* TNewStructType(char* name, struct type_list* fld) {
     res->d.NEW_STRUCT_TYPE.fld = fld;
 
     register_identifier_struct(name);
+    check_field_list(fld);
     return res;
 }
 
@@ -122,6 +123,7 @@ struct left_type* TNewUnionType(char* name, struct type_list* fld) {
     res->d.NEW_UNION_TYPE.fld = fld;
 
     register_identifier_union(name);
+    check_field_list(fld);
 
     return res;
 }
@@ -173,6 +175,7 @@ struct var_decl_expr* TOrigType(char* name) {
     struct var_decl_expr* res = new_var_decl_expr_ptr();
     res->t = T_ORIG_TYPE;
     res->d.ORIG_TYPE.name = name;
+    res->d.ORIG_TYPE.lineno = yylineno;
     return res;
 }
 
@@ -208,6 +211,7 @@ struct glob_item* TStructDef(char* name, struct type_list* fld) {
     res->d.STRUCT_DEF.fld = fld;
 
     register_identifier_struct(name);
+    check_field_list(fld);
 
     return res;
 }
@@ -229,6 +233,7 @@ struct glob_item* TUnionDef(char* name, struct type_list* fld) {
     res->d.UNION_DEF.fld = fld;
 
     register_identifier_union(name);
+    check_field_list(fld);
 
     return res;
 }
@@ -271,22 +276,7 @@ struct glob_item* TTypeDef(struct left_type* t, struct var_decl_expr* e) {
     res->d.TYPE_DEF.e = e;
 
     // get the core type name and register it
-    struct var_decl_expr* ptr = e;
-    while (ptr->t != T_ORIG_TYPE) {
-        switch (ptr->t) {
-            case T_PTR_TYPE:
-                ptr = ptr->d.PTR_TYPE.base;
-                break;
-            case T_ARRAY_TYPE:
-                ptr = ptr->d.ARRAY_TYPE.base;
-                break;
-            case T_FUNC_TYPE:
-                ptr = ptr->d.FUNC_TYPE.ret;
-                break;
-            case T_ORIG_TYPE:
-                break;
-        }
-    }
+    struct var_decl_expr* ptr = get_core_type(e);
     register_identifier_typedef(ptr->d.ORIG_TYPE.name);
 
     return res;
@@ -299,22 +289,7 @@ struct glob_item* TVarDef(struct left_type* t, struct var_decl_expr* e) {
     res->d.VAR_DEF.e = e;
 
     // get the core type name and register it
-    struct var_decl_expr* ptr = e;
-    while (ptr->t != T_ORIG_TYPE) {
-        switch (ptr->t) {
-            case T_PTR_TYPE:
-                ptr = ptr->d.PTR_TYPE.base;
-                break;
-            case T_ARRAY_TYPE:
-                ptr = ptr->d.ARRAY_TYPE.base;
-                break;
-            case T_FUNC_TYPE:
-                ptr = ptr->d.FUNC_TYPE.ret;
-                break;
-            case T_ORIG_TYPE:
-                break;
-        }
-    }
+    struct var_decl_expr* ptr = get_core_type(e);
     register_identifier_variable(ptr->d.ORIG_TYPE.name);
     return res;
 }

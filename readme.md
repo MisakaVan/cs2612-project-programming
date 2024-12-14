@@ -11,6 +11,7 @@
 - [ ] 利用 `lib.h` 给的哈希表存放一些类型前置定义
   - [x] 检查在全局变量/Struct/Union/Enum/Typedef声明中出现的标识符是否已经在全局出现过
   - [x] 检查Struct/Union/Enum/Typedef被使用时是否已经有前置定义
-  - [ ] 检查Struct/Union的字段内是否有变量名重复
+  - [x] 检查Struct/Union的字段内是否有变量名重复
+  - [ ] 指出检查的完备性（没有遗漏检查）
 - [ ] 完善build、test、使用文档
 
