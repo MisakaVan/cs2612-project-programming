@@ -304,7 +304,7 @@ void check_field_list(struct type_list *field_list){
             core_type->d.ORIG_TYPE.name, 
             IDENT_TYPE_VARIABLE,
             field_table,
-            -1
+            core_type->d.ORIG_TYPE.lineno
         );
         field_list = field_list->next;
     }

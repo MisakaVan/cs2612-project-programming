@@ -175,6 +175,7 @@ struct var_decl_expr* TOrigType(char* name) {
     struct var_decl_expr* res = new_var_decl_expr_ptr();
     res->t = T_ORIG_TYPE;
     res->d.ORIG_TYPE.name = name;
+    res->d.ORIG_TYPE.lineno = yylineno;
     return res;
 }
 

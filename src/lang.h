@@ -103,6 +103,7 @@ struct var_decl_expr {
     union {
         struct {
             char* name;
+            int lineno;
         } ORIG_TYPE;
         struct {
             struct var_decl_expr* base;

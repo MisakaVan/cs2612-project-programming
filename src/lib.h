@@ -13,6 +13,8 @@
     #define pdebug(fmt, ...)
 #endif
 
+extern int yylineno;
+
 // clang-format off
 unsigned int build_nat(char * c, int len);
 char * new_str(char * str, int len);
