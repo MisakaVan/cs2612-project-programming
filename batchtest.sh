@@ -1,5 +1,7 @@
 #!/bin/bash
 
+inputext=".jtl.h"
+
 # Function to run test on a given input file
 run_test() {
   local input_file="$1"
@@ -15,7 +17,7 @@ run_test() {
 test_on_directory() {
   local dir="$1"
   for input_file in "$dir"/*; do
-    if [ -f "$input_file" ] && [[ "$input_file" != *.out ]]; then
+    if [ -f "$input_file" ] && [[ "$input_file" == *"$inputext" ]]; then
       run_test "$input_file"
     fi
   done
