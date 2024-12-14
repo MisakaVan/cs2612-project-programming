@@ -90,7 +90,7 @@ struct left_type* TStructType(char* name) {
     res->t = T_STRUCT_TYPE;
     res->d.STRUCT_TYPE.name = name;
 
-    check_identifier_struct(name);
+    register_identifier_struct(name);
 
     return res;
 }
@@ -111,7 +111,7 @@ struct left_type* TUnionType(char* name) {
     res->t = T_UNION_TYPE;
     res->d.UNION_TYPE.name = name;
 
-    check_identifier_union(name);
+    register_identifier_union(name);
 
     return res;
 }
@@ -133,7 +133,7 @@ struct left_type* TEnumType(char* name) {
     res->t = T_ENUM_TYPE;
     res->d.ENUM_TYPE.name = name;
 
-    check_identifier_enum(name);
+    register_identifier_enum(name);
 
     return res;
 }

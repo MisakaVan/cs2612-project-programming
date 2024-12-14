@@ -158,9 +158,9 @@ struct, union, enum   names should not overlap with each other.
 int conflict_identifier_register_lut[6][6] = {
     {1, 1, 0, 0, 0, 1}, // variable
     {1, 1, 0, 0, 0, 1}, // enumerator
-    {0, 0, 1, 1, 1, 0}, // struct
-    {0, 0, 1, 1, 1, 0}, // union
-    {0, 0, 1, 1, 1, 0}, // enum
+    {0, 0, 0, 1, 1, 0}, // struct
+    {0, 0, 1, 0, 1, 0}, // union
+    {0, 0, 1, 1, 0, 0}, // enum
     {1, 1, 0, 0, 0, 1}, // typedef
 };
 
@@ -271,7 +271,15 @@ void check_identifier_in_table(char* name, enum IdentifierType using_type, struc
         printf("Warning: (Line %d) Identifier %s is not registered as %s\n", yylineno, name, description);
         for (int i = 0; i < IDENT_TYPE_COUNT; i++) {
             if (info->flags & (1 << i)) {
-                pdebug("  - Identifier %s is registered as %s at line %d\n", name, identifier_type_str[i], info->lineno[i]);
+                printf("  - Identifier %s is registered as %s at line %d\n", name, identifier_type_str[i], info->lineno[i]);
+                if (using_type == IDENT_TYPE_TYPEDEF &&
+                    (i == IDENT_TYPE_STRUCT || i == IDENT_TYPE_UNION ||
+                     i == IDENT_TYPE_ENUM)) {
+                    // e.g. Got `Foo foo` but `Foo` is registered as struct.
+                    // Suggest to use `struct Foo foo` instead.
+                    printf("  - Maybe you want to use %s %s instead of %s\n",
+                           identifier_type_str[i], name, name);
+                }
             }
         }
     }
