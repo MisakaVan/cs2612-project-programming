@@ -59,7 +59,7 @@ struct IdentifierInfo {
 
 struct IdentifierInfo *init_identifier_info();
 
-void register_identifier_in_table(char* name, enum IdentifierType type, struct SLL_hash_table *table, int lineno);
+void register_identifier_in_table(char* name, enum IdentifierType type, struct SLL_hash_table *table, int lineno, char *description);
 void register_identifier(char *name, enum IdentifierType type);
 
 void register_identifier_variable(char *name);

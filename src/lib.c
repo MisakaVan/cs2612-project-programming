@@ -175,13 +175,17 @@ char* identifier_type_str[6] = {
 extern int yylineno;
 
 // lineno: use -1 to fallback to yylineno.
-void register_identifier_in_table(char* name, enum IdentifierType type, struct SLL_hash_table *table, int lineno) {
+void register_identifier_in_table(char* name, enum IdentifierType type, struct SLL_hash_table *table, int lineno, char *description) {
     if (lineno == -1){
         lineno = yylineno;
     }
+    if (description == NULL){
+        // fallback to the default description
+        description = identifier_type_str[type];
+    }
 
     pdebug("Line %d:\n", lineno);
-    pdebug("Registering identifier %s as %s\n", name, identifier_type_str[type]);
+    pdebug("Registering identifier %s as %s\n", name, description);
 
     if (name==NULL){
         pdebug("Identifier name is NULL (Anonymous), skip registering\n");
@@ -210,7 +214,7 @@ void register_identifier_in_table(char* name, enum IdentifierType type, struct S
         }
         if (info->flags & (1 << i)) {
             // identifier is already registered as a conflicting type.
-            printf("Warning: (Line %d) Identifier %s is already registered as %s at line %d\n", lineno, name, identifier_type_str[i], info->lineno[i]);
+            printf("Warning: (Line %d) Identifier %s is already registered as %s at line %d\n", lineno, name, description, info->lineno[i]);
             conflict = 1;
         }
     }
@@ -223,7 +227,7 @@ void register_identifier_in_table(char* name, enum IdentifierType type, struct S
 }
 
 void register_identifier(char* name, enum IdentifierType type) {
-    register_identifier_in_table(name, type, identifier_table, -1);
+    register_identifier_in_table(name, type, identifier_table, -1, NULL);
 }
 
 void register_identifier_variable(char* name) {
@@ -304,7 +308,8 @@ void check_field_list(struct type_list *field_list){
             core_type->d.ORIG_TYPE.name, 
             IDENT_TYPE_VARIABLE,
             field_table,
-            core_type->d.ORIG_TYPE.lineno
+            core_type->d.ORIG_TYPE.lineno,
+            "field variable"
         );
         field_list = field_list->next;
     }
