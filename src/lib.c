@@ -259,15 +259,16 @@ void register_identifier_typedef(char* name) {
 void check_identifier_in_table(char* name, enum IdentifierType using_type, struct SLL_hash_table *table){
     pdebug("Line %d:\n", yylineno);
     struct IdentifierInfo *info = NULL;
+    char *description = identifier_type_str[using_type];
     info = (struct IdentifierInfo*)SLL_hash_get(table, name);
     if ((long long)info == NONE) {
-        printf("Warning: (Line %d) Identifier %s has never been registered\n", yylineno, name);
+        printf("Warning: (Line %d) Identifier %s has never been registered. Expected: %s\n", yylineno, name, description);
         return;
     }
     pdebug("Identifier %s flags: %lld\n", name, info->flags);
 
     if (!(info->flags & (1 << using_type))) {
-        printf("Warning: (Line %d) Identifier %s is not registered as %s\n", yylineno, name, identifier_type_str[using_type]);
+        printf("Warning: (Line %d) Identifier %s is not registered as %s\n", yylineno, name, description);
         for (int i = 0; i < IDENT_TYPE_COUNT; i++) {
             if (info->flags & (1 << i)) {
                 pdebug("  - Identifier %s is registered as %s at line %d\n", name, identifier_type_str[i], info->lineno[i]);
