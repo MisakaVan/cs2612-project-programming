@@ -158,9 +158,9 @@ struct, union, enum   names should not overlap with each other.
 int conflict_identifier_register_lut[6][6] = {
     {1, 1, 0, 0, 0, 1}, // variable
     {1, 1, 0, 0, 0, 1}, // enumerator
-    {0, 0, 1, 1, 1, 0}, // struct
-    {0, 0, 1, 1, 1, 0}, // union
-    {0, 0, 1, 1, 1, 0}, // enum
+    {0, 0, 0, 1, 1, 0}, // struct
+    {0, 0, 1, 0, 1, 0}, // union
+    {0, 0, 1, 1, 0, 0}, // enum
     {1, 1, 0, 0, 0, 1}, // typedef
 };
 
