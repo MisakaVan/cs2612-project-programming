@@ -40,5 +40,5 @@ struct WeatherConditions {
 
 // define a complex struct
 struct ComplexStruct {
-    WeatherConditions (*func1)(int, struct Foo*);
+    struct WeatherConditions (*func1)(int, struct Foo*);
 };
