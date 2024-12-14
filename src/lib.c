@@ -293,3 +293,19 @@ void check_identifier_typedef(char *name){
     check_identifier(name, IDENT_TYPE_TYPEDEF);
 }
 
+void check_field_list(struct type_list *field_list){
+    // build a new hash table for the field list
+    struct SLL_hash_table *field_table = init_SLL_hash();
+    while (field_list != NULL){
+        struct left_type *t = field_list->t;
+        struct var_decl_expr *e = field_list->e;
+        struct var_decl_expr *core_type = get_core_type(e);
+        register_identifier_in_table(
+            core_type->d.ORIG_TYPE.name, 
+            IDENT_TYPE_VARIABLE,
+            field_table,
+            -1
+        );
+        field_list = field_list->next;
+    }
+}

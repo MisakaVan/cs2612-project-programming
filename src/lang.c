@@ -102,6 +102,7 @@ struct left_type* TNewStructType(char* name, struct type_list* fld) {
     res->d.NEW_STRUCT_TYPE.fld = fld;
 
     register_identifier_struct(name);
+    check_field_list(fld);
     return res;
 }
 
@@ -122,6 +123,7 @@ struct left_type* TNewUnionType(char* name, struct type_list* fld) {
     res->d.NEW_UNION_TYPE.fld = fld;
 
     register_identifier_union(name);
+    check_field_list(fld);
 
     return res;
 }
@@ -208,6 +210,7 @@ struct glob_item* TStructDef(char* name, struct type_list* fld) {
     res->d.STRUCT_DEF.fld = fld;
 
     register_identifier_struct(name);
+    check_field_list(fld);
 
     return res;
 }
@@ -229,6 +232,7 @@ struct glob_item* TUnionDef(char* name, struct type_list* fld) {
     res->d.UNION_DEF.fld = fld;
 
     register_identifier_union(name);
+    check_field_list(fld);
 
     return res;
 }

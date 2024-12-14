@@ -76,4 +76,7 @@ void check_identifier_struct(char *name);
 void check_identifier_union(char *name);
 void check_identifier_typedef(char *name);
 
+// check if identifiers overlap within a field list
+void check_field_list(struct type_list *field_list);
+
 #endif
