@@ -5,13 +5,19 @@
 
 #define NONE 4294967295
 
-#define VERBOSE 1
+// global variable to indicate logging level
 
-#ifdef VERBOSE
-    #define pdebug(fmt, ...) printf("[DEBUG] " fmt, ##__VA_ARGS__)
-#else
-    #define pdebug(fmt, ...)
-#endif
+#define LOG_LEVEL_ERROR 0
+#define LOG_LEVEL_VERBOSE 5
+
+
+extern int log_level;
+
+#define pdebug(fmt, ...) \
+do { \
+    if (log_level >= LOG_LEVEL_VERBOSE) \
+        printf("[DEBUG] " fmt, ##__VA_ARGS__); \
+} while (0)
 
 extern int yylineno;
 

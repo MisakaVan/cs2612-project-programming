@@ -4,6 +4,7 @@
 #include "astprint.h"
 #include "lib.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 // use the new printer
 // #define ASTPRINT
@@ -22,6 +23,12 @@ int main(int argc, char** argv) {
     if (argc >= 3) {
         printf("Error, too many arguments!\n");
         return 0;
+    }
+
+    // read "PARSER_VERBOSE" environment variable
+    char *log_level_str = getenv("PARSER_VERBOSE");
+    if (log_level_str != NULL) {
+        log_level = LOG_LEVEL_VERBOSE;
     }
 
     // initialize the identifier table

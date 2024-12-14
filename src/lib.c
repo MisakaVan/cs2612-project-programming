@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+int log_level = 0;
+
 unsigned int build_nat(char* c, int len) {
     int s = 0, i = 0;
     for (i = 0; i < len; ++i) {
