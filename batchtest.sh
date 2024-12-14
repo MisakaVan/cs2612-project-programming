@@ -6,6 +6,7 @@ run_test() {
   local output_file="${input_file}.out"
   if [ "$verbose" = true ]; then
     echo "Testing on $input_file"
+    echo "Output to $output_file"
   fi
   ./main "$input_file" > "$output_file"
 }
