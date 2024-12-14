@@ -50,6 +50,7 @@ struct IdentifierInfo {
 
 struct IdentifierInfo *init_identifier_info();
 
+void register_identifier_in_table(char* name, enum IdentifierType type, struct SLL_hash_table *table, int lineno);
 void register_identifier(char *name, enum IdentifierType type);
 
 void register_identifier_variable(char *name);
@@ -60,7 +61,9 @@ void register_identifier_enum(char *name);
 void register_identifier_typedef(char *name);
 
 // check if the identifier is already declared when using it
+void check_identifier_in_table(char* name, enum IdentifierType type, struct SLL_hash_table *table);
 void check_identifier(char *name, enum IdentifierType using_type);
+
 void check_identifier_enum(char *name);
 void check_identifier_struct(char *name);
 void check_identifier_union(char *name);

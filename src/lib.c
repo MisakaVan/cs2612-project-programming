@@ -151,8 +151,13 @@ char* identifier_type_str[6] = {
 // use yylineno to record the line number of the first registration
 extern int yylineno;
 
-void register_identifier(char* name, enum IdentifierType type) {
-    pdebug("Line %d:\n", yylineno);
+// lineno: use -1 to fallback to yylineno.
+void register_identifier_in_table(char* name, enum IdentifierType type, struct SLL_hash_table *table, int lineno) {
+    if (lineno == -1){
+        lineno = yylineno;
+    }
+
+    pdebug("Line %d:\n", lineno);
     pdebug("Registering identifier %s as %s\n", name, identifier_type_str[type]);
 
     if (name==NULL){
@@ -162,11 +167,11 @@ void register_identifier(char* name, enum IdentifierType type) {
 
     struct IdentifierInfo *info = NULL;
 
-    info = (struct IdentifierInfo*)SLL_hash_get(identifier_table, name);
+    info = (struct IdentifierInfo*)SLL_hash_get(table, name);
     if ((long long)info == NONE) {
         pdebug("Identifier %s is not in the hashtable\n", name);
         info = init_identifier_info();
-        SLL_hash_set(identifier_table, name, (long long)info);
+        SLL_hash_set(table, name, (long long)info);
     }
     else{
         pdebug("Identifier %s is in the hashtable\n", name);
@@ -182,7 +187,7 @@ void register_identifier(char* name, enum IdentifierType type) {
         }
         if (info->flags & (1 << i)) {
             // identifier is already registered as a conflicting type.
-            printf("Warning: (Line %d) Identifier %s is already registered as %s at line %d\n", yylineno, name, identifier_type_str[i], info->lineno[i]);
+            printf("Warning: (Line %d) Identifier %s is already registered as %s at line %d\n", lineno, name, identifier_type_str[i], info->lineno[i]);
             conflict = 1;
         }
     }
@@ -190,8 +195,12 @@ void register_identifier(char* name, enum IdentifierType type) {
     if (!conflict) {
         pdebug("No conflict. Now register %s as %s\n", name, identifier_type_str[type]);
         info->flags |= (1 << type);
-        info->lineno[type] = yylineno; // the line number of the first registration
+        info->lineno[type] = lineno; // the line number of the first registration
     }
+}
+
+void register_identifier(char* name, enum IdentifierType type) {
+    register_identifier_in_table(name, type, identifier_table, -1);
 }
 
 void register_identifier_variable(char* name) {
@@ -218,10 +227,10 @@ void register_identifier_typedef(char* name) {
     register_identifier(name, IDENT_TYPE_TYPEDEF);
 }
 
-void check_identifier(char *name, enum IdentifierType using_type){
+void check_identifier_in_table(char* name, enum IdentifierType using_type, struct SLL_hash_table *table){
     pdebug("Line %d:\n", yylineno);
     struct IdentifierInfo *info = NULL;
-    info = (struct IdentifierInfo*)SLL_hash_get(identifier_table, name);
+    info = (struct IdentifierInfo*)SLL_hash_get(table, name);
     if ((long long)info == NONE) {
         printf("Warning: (Line %d) Identifier %s has never been registered\n", yylineno, name);
         return;
@@ -239,6 +248,10 @@ void check_identifier(char *name, enum IdentifierType using_type){
     else {
         pdebug("OK: Identifier %s has been registered as %s at line %d\n", name, identifier_type_str[using_type], info->lineno[using_type]);
     }
+}
+
+void check_identifier(char *name, enum IdentifierType using_type){
+    check_identifier_in_table(name, using_type, identifier_table);
 }
 
 void check_identifier_enum(char *name){
