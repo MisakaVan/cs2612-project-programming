@@ -271,7 +271,15 @@ void check_identifier_in_table(char* name, enum IdentifierType using_type, struc
         printf("Warning: (Line %d) Identifier %s is not registered as %s\n", yylineno, name, description);
         for (int i = 0; i < IDENT_TYPE_COUNT; i++) {
             if (info->flags & (1 << i)) {
-                pdebug("  - Identifier %s is registered as %s at line %d\n", name, identifier_type_str[i], info->lineno[i]);
+                printf("  - Identifier %s is registered as %s at line %d\n", name, identifier_type_str[i], info->lineno[i]);
+                if (using_type == IDENT_TYPE_TYPEDEF &&
+                    (i == IDENT_TYPE_STRUCT || i == IDENT_TYPE_UNION ||
+                     i == IDENT_TYPE_ENUM)) {
+                    // e.g. Got `Foo foo` but `Foo` is registered as struct.
+                    // Suggest to use `struct Foo foo` instead.
+                    printf("  - Maybe you want to use %s %s instead of %s\n",
+                           identifier_type_str[i], name, name);
+                }
             }
         }
     }
