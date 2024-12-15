@@ -26,9 +26,13 @@ int main(int argc, char** argv) {
     }
 
     // read "PARSER_VERBOSE" environment variable
+    // If it is set to a non-zero value, then set log_level to LOG_LEVEL_VERBOSE
     char *log_level_str = getenv("PARSER_VERBOSE");
-    if (log_level_str != NULL) {
-        log_level = LOG_LEVEL_VERBOSE;
+    if (log_level_str != NULL ) {
+        int log_level_input = atoi(log_level_str);
+        if (log_level_input != 0) {
+            log_level = LOG_LEVEL_VERBOSE;
+        }
     }
 
     // initialize the identifier table

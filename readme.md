@@ -58,7 +58,7 @@ make
 ./main <path-to-file>
 ```
 
-`main`检测环境变量`PARSER_VERBOSE`。如果设置了`PARSER_VERBOSE`，则会输出更多的调试信息。
+`main`检测环境变量`PARSER_VERBOSE`。如果设置了`PARSER_VERBOSE`（整数值）且值不为0，则会输出更多的调试信息。
 
 例如：
 
