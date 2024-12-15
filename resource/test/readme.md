@@ -13,3 +13,4 @@ Each subdirectory has its topic as its name and contains several testcases.
 - `test-var-function`: Declaration of functions/functions pointers/function parameters
 - `test-identifier-*`: Testcases for identifier registration within scope
 - `test-syntax-error`: Testcases with syntax errors
+- `test-complex-examples`: Complex testcases of C headers
