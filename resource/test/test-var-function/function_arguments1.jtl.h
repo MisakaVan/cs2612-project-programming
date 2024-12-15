@@ -25,6 +25,6 @@ char foo(
 
 void bar(
     void *[5]       , // void *<empty>[5]
-    void *(*())     , // void *(*<empty>)()
+    void *(*())     , // void *(*<empty>())
     void *(*)[5]      // void *(*<empty>)[5]
 );
