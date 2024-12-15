@@ -26,11 +26,16 @@ cs2612-project-programming/
 
 ```
 
-## 构建
+## 构建、运行和测试
 
 提供了一个简单的 Makefile，可以直接执行 `make` 来构建项目。
 
-注意：构建过程在MacOS和Ubuntu上测试通过，但是没有在Windows上测试过。
+注意：构建过程在MacOS和Ubuntu上测试通过，但是没有在Windows原生环境、mingw上测试过。
+
+### Docker
+
+本项目准备了一个devcontainer，基于Ubuntu20.04提供了所需的`bison`，`flex`等依赖。
+如果要使用该环境，使用vscode打开文件夹后，选择右下角弹窗“在容器中重新打开”（或者Ctrl-Shift-P搜索命令）以直接使用该环境。
 
 ### 依赖
 
@@ -38,7 +43,11 @@ cs2612-project-programming/
 - `bison: 3.8.2`
 - `flex: 2.6.4`
 
+在开发过程中使用了特定的bison和flex版本。在其他版本的运行行为应该不会有太大影响。
+
 ### 构建步骤
+
+请查看`Makefile`。
 
 ```bash
 make
