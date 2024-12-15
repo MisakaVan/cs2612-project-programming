@@ -6,7 +6,7 @@ typedef u64 *value_t;
 
 typedef struct LinkedListNode_ {
     value_t value;
-    struct LinkedListNode* next;
+    struct LinkedListNode_* next;
 } LinkedListNode;
 
 typedef struct LinkedList_ {
