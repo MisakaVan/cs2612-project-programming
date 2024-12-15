@@ -30,7 +30,7 @@ cs2612-project-programming/
 
 提供了一个简单的 Makefile，可以直接执行 `make` 来构建项目。
 
-注意：构建过程在MacOS和Ubuntu上测试通过，但是没有在Windows原生环境、mingw上测试过。
+注意：构建过程在MacOS、Ubuntu、mingw上测试通过，但是不能在Windows原生环境上运行。
 
 ### Docker
 
